@@ -1,7 +1,8 @@
 import numpy as np
 from numpy.testing import assert_array_almost_equal
-from tensor.utils import assert_compatile_sizes_facewise, assert_compatile_sizes_modek
-from tensor.utils import facewise, modek_product, facewise_t_svd, facewise_t_svdII
+from tensor.utils import assert_compatile_sizes_facewise, assert_compatile_sizes_modek, reshape
+import tensor.facewise as fprod
+import tensor.mode_k as mode_k
 
 
 def t_mortho(A, M):
@@ -9,7 +10,7 @@ def t_mortho(A, M):
     # each Mk must be orthogonal
 
     for i in range(len(M)):
-        A = modek_product(A, M[i], i + 2)
+        A = mode_k.modek_product(A, M[i], i + 2)
 
     return A
 
@@ -20,9 +21,9 @@ def t_imortho(A, M):
 
     for i in range(len(M) - 1, -1, -1):
         if np.all(np.isreal(M[i])):
-            A = modek_product(A, M[i].T, i + 2)
+            A = mode_k.modek_product(A, M[i].T, i + 2)
         else:
-            A = modek_product(A, np.conjugate(M[i]).T, i + 2)
+            A = mode_k.modek_product(A, np.conjugate(M[i]).T, i + 2)
 
     return A
 
@@ -45,7 +46,7 @@ def m_product(A, B, M, ortho=True):
         raise ValueError("m-product for non-orthogonal matrices not yet implemented")
 
     # compute facewise product
-    C_hat = facewise(A_hat, B_hat)
+    C_hat = fprod.facewise_product(A_hat, B_hat)
 
     # return to spatial comain
     C = t_imortho(C_hat, M)
@@ -85,15 +86,14 @@ def m_svd(A, M, k=None):
     # transform
     A = t_mortho(A, M)
 
-    U, s, VH = facewise_t_svd(A, k)
+    U, s, VH = fprod.facewise_t_svd(A, k)
 
     # return to spatial domain
     U = t_imortho(U, M)
-    S = np.reshape(t_imortho(np.reshape(s, (1, *s.shape)), M), (s.shape[0], *shape_A[2:]))  # remove first dimension
+    S = np.reshape(t_imortho(reshape(s, (1, *s.shape)), M), (s.shape[0], *shape_A[2:]))  # remove first dimension
     VH = t_imortho(VH, M)
 
     return U, S, VH
-
 
 
 def m_svdII(A, M, gamma, compress_UV=True, return_spatial=True):
@@ -103,7 +103,7 @@ def m_svdII(A, M, gamma, compress_UV=True, return_spatial=True):
     A = t_mortho(A, M)
     # nrm_Ahat = np.linalg.norm(A)
 
-    U, S, VH, multi_rank = facewise_t_svdII(A, gamma, compress_UV=compress_UV)
+    U, S, VH, multi_rank = fprod.facewise_t_svdII(A, gamma, compress_UV=compress_UV)
 
     # return to spatial domain
     if return_spatial:

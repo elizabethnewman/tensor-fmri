@@ -15,6 +15,7 @@ roi_tensor, my_color_map, names = starp.visualize_roi(star_plus_data)
 
 plt.figure(1)
 montage_array(roi_tensor, cmap=my_color_map, names=names)
+plt.savefig('/Users/elizabethnewman/Desktop/brain1.jpg')
 plt.show()
 
 tensor_PS, labels = starp.get_labels(star_plus_data)

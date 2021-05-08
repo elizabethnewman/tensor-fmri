@@ -1,10 +1,9 @@
 import numpy as np
-from numpy.linalg import svd
 from numpy.testing import assert_array_almost_equal
-from tensor.utils import assert_compatile_sizes_facewise, facewise, facewise_t_svd, facewise_t_svdII
+import tensor.facewise as fprod
+from tensor.utils import assert_compatile_sizes_facewise, reshape
 from scipy.fft import fft, ifft
 from math import prod
-import time
 
 # ==================================================================================================================== #
 # transforms
@@ -41,7 +40,7 @@ def t_product(A, B):
     B_hat = t_fft(B)
 
     # compute facewise product
-    C_hat = facewise(A_hat, B_hat)
+    C_hat = fprod.facewise_product(A_hat, B_hat)
 
     # return to spatial comain
     C = t_ifft(C_hat)
@@ -103,7 +102,7 @@ def t_svd(A, k=None):
     # transform
     A = t_fft(A)
 
-    U, s, VH = facewise_t_svd(A, k)
+    U, s, VH = fprod.facewise_t_svd(A, k)
 
     # return to spatial domain
     U = t_ifft(U)
@@ -120,7 +119,7 @@ def t_svdII(A, gamma, compress_UV=False, return_spatial=True):
     A = t_fft(A)
     # nrm_Ahat = np.linalg.norm(A)
 
-    U, S, VH, multi_rank = facewise_t_svdII(A, gamma, compress_UV=compress_UV)
+    U, S, VH, multi_rank = fprod.facewise_t_svdII(A, gamma, compress_UV=compress_UV)
 
     # return to spatial domain
     if return_spatial:

@@ -2,14 +2,14 @@ import numpy
 import numpy as np
 from numpy.testing import assert_array_equal
 from numpy.linalg import eig, norm
-from tensor.utils import modek_unfold, modek_fold, modek_product, modek_product_many
+from tensor.mode_k import modek_unfold, modek_fold, modek_product
 from copy import copy, deepcopy
 
 
 # https://gitlab.com/tensors/tensor_toolbox/-/blob/master/hosvd.m
 
 def hosvd(X, tol, ranks=None, sequential=False, dim_order=None):
-
+    # || X - T || / || X || <= tol
     ndim = X.ndim
     shape_X = X.shape
 
@@ -63,7 +63,7 @@ def hosvd(X, tol, ranks=None, sequential=False, dim_order=None):
 
 def tucker_product(G, U, transpose=False, dim_order=None):
 
-    X = modek_product_many(G, U, axis=dim_order, transpose=transpose)
+    X = modek_product(G, U, axis=dim_order, transpose=transpose)
 
     return X
 

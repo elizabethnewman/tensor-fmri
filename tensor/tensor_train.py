@@ -2,7 +2,7 @@ import numpy
 import numpy as np
 from numpy.testing import assert_array_equal
 from numpy.linalg import svd, norm
-from tensor.utils import modek_unfold, modek_fold, modek_product, modek_product_many
+from tensor.mode_k import modek_unfold, modek_fold, modek_product
 from copy import copy, deepcopy
 
 
@@ -71,7 +71,6 @@ def chop(s, tol):
     r = r_max - len(ff)
 
     return r
-
 
 
 def tt_product(G, shape_X, dim_order=None):

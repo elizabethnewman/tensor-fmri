@@ -6,18 +6,18 @@ from numpy.testing import assert_array_almost_equal, assert_array_equal
 import tensor.utils as tu
 from tensor.tucker import hosvd, tucker_product
 
-# np.random.seed(20)
+np.random.seed(42)
 
-shape_A = (20, 20, 20, 20, 20)
+shape_A = (100, 200, 50)
 A = randn(*shape_A)
-# A = A / norm(A)
+A = A / norm(A)
 
 # higher tolerance means worse approximation, but more compression
-tol = 1e-2
+tol = 0.5
 
 dim_order = permutation(np.arange(len(shape_A)))
 
-G, U, ranks = hosvd(A, tol, dim_order=dim_order, sequential=False, ranks=None)
+G, U, ranks = hosvd(A, tol, dim_order=dim_order, sequential=False, ranks=(50, 100, 25))
 
 Ak = tucker_product(G, U)
 

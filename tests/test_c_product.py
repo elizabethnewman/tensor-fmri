@@ -2,13 +2,14 @@ import numpy as np
 from numpy.random import randn
 from numpy.linalg import norm
 from numpy.testing import assert_array_almost_equal, assert_array_equal
-import tensor.utils as tu
+from tensor.facewise import t_eye_hat, fdiag
+from tensor.utils import reshape
 import tensor.c_product as cprod
 
 
 # ==================================================================================================================== #
 # identity tensors
-I_hat = tu.t_eye_hat((3, 3, 4, 5, 6))
+I_hat = t_eye_hat((3, 3, 4, 5, 6))
 
 cprod_I_true = cprod.t_idct(I_hat)
 cprod_I = cprod.c_product_eye(I_hat.shape)
@@ -23,9 +24,6 @@ shape_B = (shape_A[1], 8, *shape_A[2:])
 
 A = randn(*shape_A)
 B = randn(*shape_B)
-
-# making sure we can multiply
-C1 = cprod.c_product(A, B)
 
 # force A to be identity tensor for t-product
 A = cprod.c_product_eye((shape_A[1], shape_A[1], *shape_A[2:]))
@@ -69,7 +67,7 @@ A = randn(*shape_A)
 
 U, s, VH = cprod.c_svd(A)
 
-A_approx = cprod.c_product(U, cprod.c_product(tu.fdiag(s), VH))
+A_approx = cprod.c_product(U, cprod.c_product(fdiag(s), VH))
 
 assert_array_almost_equal(A, A_approx)
 err = norm(A - A_approx) / norm(A)
@@ -77,7 +75,7 @@ print('tsvd: relative error = %0.2e' % err)
 
 for k in range(0, min(A.shape[0], A.shape[1])):
     Uk, sk, VHk = cprod.c_svd(A, k + 1)
-    Ak = cprod.c_product(Uk, cprod.c_product(tu.fdiag(sk), VHk))
+    Ak = cprod.c_product(Uk, cprod.c_product(fdiag(sk), VHk))
     err1 = norm(A - Ak) ** 2
     err2 = np.sum(s[k + 1:] ** 2)
     print('%0.2e' % abs(err1 - err2))
@@ -93,29 +91,37 @@ A = randn(*shape_A)
 
 U, s, VH, _ = cprod.c_svdII(A, 1)
 
-A_approx = cprod.c_product(U, cprod.c_product(tu.fdiag(s), VH))
+A_approx = cprod.c_product(U, cprod.c_product(fdiag(s), VH))
 
 assert_array_almost_equal(A, A_approx)
 err = norm(A - A_approx) / norm(A)
 print('tsvdII: relative error = %0.2e' % err)
 
 
-nrm_Ahat = norm(cprod.t_dct(A))
+nrm_Ahat2 = norm(cprod.t_dct(A)) ** 2
+s_hat = np.real(cprod.t_dct(reshape(s, (1, *s.shape)))[0])  # all singular values in transform domain
 
 # nrm_A2 = norm(A) ** 2
 gamma = np.linspace(0.5, 1, 10)
 for k in range(len(gamma)):
     Uk, sk, VHk, multi_rank = cprod.c_svdII(A, gamma[k])
-    Ak = cprod.c_product(Uk, cprod.c_product(tu.fdiag(sk), VHk))
+    Ak = cprod.c_product(Uk, cprod.c_product(fdiag(sk), VHk))
 
-    sk_hat = cprod.t_dct(np.reshape(s, (1, *s.shape)))[0]
-    sk_hat = np.reshape(sk_hat, (sk_hat.shape[0], -1))
-    for i in range(min(multi_rank), max(multi_rank) + 1):
-        sk_hat[:i, multi_rank >= i] = 0
-
+    # approximation error
     err1 = norm(A - Ak) ** 2
-    err2 = np.sum(sk_hat ** 2)
 
-    gamma_approx = (norm(Ak) / nrm_Ahat) ** 2
-    print('err: %0.2e\tgamma: %0.2e' % (abs(err1 - err2), (gamma_approx - gamma[k])))
+    # should be equal to the sum of the cutoff singular values in the transform domain
+    sk_hat = np.real(cprod.t_dct(reshape(sk, (1, *sk.shape)))[0])
+    err2 = np.sum((s_hat - sk_hat) ** 2)  # only count singular values we did not store
+
+    # another approach to get err2
+    # sk_hat2 = reshape(s_hat, (s_hat.shape[0], -1))
+    # for i in range(min(multi_rank), max(multi_rank) + 1):
+    #     sk_hat2[:i, multi_rank >= i] = 0
+    # err2 = np.sum(sk_hat2 ** 2)
+
+    nrm_Ak2 = norm(Ak) ** 2
+    assert_array_almost_equal(nrm_Ak2, np.sum(sk_hat ** 2))
+    gamma_approx = nrm_Ak2 / nrm_Ahat2
+    print('err: %0.2e\tgamma diff: %0.2e' % (abs(err1 - err2), (gamma_approx - gamma[k])))
 

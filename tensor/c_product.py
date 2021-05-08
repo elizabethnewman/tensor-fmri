@@ -1,6 +1,7 @@
 import numpy as np
 from numpy.testing import assert_array_almost_equal
-from tensor.utils import assert_compatile_sizes_facewise, facewise, facewise_t_svd, facewise_t_svdII
+from tensor.utils import assert_compatile_sizes_facewise, reshape
+import tensor.facewise as fprod
 from scipy.fft import dct, idct
 
 def t_dct(A, norm='ortho'):
@@ -32,7 +33,7 @@ def c_product(A, B):
     B_hat = t_dct(B)
 
     # compute facewise product
-    C_hat = facewise(A_hat, B_hat)
+    C_hat = fprod.facewise_product(A_hat, B_hat)
 
     # return to spatial comain
     C = t_idct(C_hat)
@@ -71,11 +72,11 @@ def c_svd(A, k=None):
     # transform
     A = t_dct(A)
 
-    U, s, VH = facewise_t_svd(A, k)
+    U, s, VH = fprod.facewise_t_svd(A, k)
 
     # return to spatial domain
     U = t_idct(U)
-    S = np.reshape(t_idct(np.reshape(s, (1, *s.shape))), (s.shape[0], *shape_A[2:]))  # remove first dimension
+    S = reshape(t_idct(np.reshape(s, (1, *s.shape))), (s.shape[0], *shape_A[2:]))  # remove first dimension
     VH = t_idct(VH)
 
     return U, S, VH
@@ -88,12 +89,12 @@ def c_svdII(A, gamma, compress_UV=True, return_spatial=True):
     A = t_dct(A)
     # nrm_Ahat = np.linalg.norm(A)
 
-    U, S, VH, multi_rank = facewise_t_svdII(A, gamma, compress_UV=compress_UV)
+    U, S, VH, multi_rank = fprod.facewise_t_svdII(A, gamma, compress_UV=compress_UV)
 
     # return to spatial domain
     if return_spatial:
         U = t_idct(U)
-        S = t_idct(np.reshape(S, (1, *S.shape)))[0]   # remove first dimension
+        S = t_idct(reshape(S, (1, *S.shape)))[0]   # remove first dimension
         VH = t_idct(VH)
 
     return U, S, VH, multi_rank
