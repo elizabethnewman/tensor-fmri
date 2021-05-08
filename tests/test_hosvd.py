@@ -13,7 +13,7 @@ A = randn(*shape_A)
 A = A / norm(A)
 
 # higher tolerance means worse approximation, but more compression
-tol = 0.5
+tol = 1
 
 dim_order = permutation(np.arange(len(shape_A)))
 

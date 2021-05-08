@@ -3,6 +3,7 @@ import numpy as np
 from numpy.testing import assert_array_equal
 from numpy.linalg import svd, norm
 from tensor.mode_k import modek_unfold, modek_fold, modek_product
+from tensor.utils import reshape
 from copy import copy, deepcopy
 
 
@@ -29,7 +30,7 @@ def ttsvd(X, tol, ranks=None, dim_order=None):
 
     for i in range(ndim - 1):
         m = int(shape_X[i] * r[i])
-        C = np.reshape(C, [m, -1])
+        C = reshape(C, [m, -1])
 
         u, s, vh = svd(C, compute_uv=True, full_matrices=False)
 
@@ -91,10 +92,10 @@ def tt_product(G, shape_X, dim_order=None):
         Xk = u @ Xk
 
         if i > 0:
-            Xk = np.reshape(Xk, [r[i - 1], -1])
+            Xk = reshape(Xk, [r[i - 1], -1])
 
     shape_X = np.array(shape_X)
-    Xk = np.reshape(Xk, list(shape_X[dim_order]))
+    Xk = reshape(Xk, list(shape_X[dim_order]))
 
     Xk = np.transpose(Xk, list(np.argsort(dim_order)))
 
