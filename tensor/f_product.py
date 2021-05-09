@@ -1,11 +1,22 @@
 import numpy as np
-from numpy.linalg import svd
+from numpy.linalg import svd, norm
 from numpy.testing import assert_array_almost_equal
 from tensor.utils import assert_compatile_sizes_facewise
+import math
+
+
+# ==================================================================================================================== #
+def f_transform(A):
+    return A
+
+
+def f_itransform(A):
+    return A
+
 
 # ==================================================================================================================== #
 # facewise
-def facewise_product(A, B):
+def f_prod(A, B):
     """
     Multiply the frontal slice of tensors of compatible size.
     Parameters
@@ -34,7 +45,7 @@ def facewise_product(A, B):
 
 # ==================================================================================================================== #
 # general purpose functions
-def t_eye_hat(shape_I):
+def f_eye(shape_I):
     # identity tensor is the same in the transform domain
     I = np.zeros(shape_I)
     idx = np.arange(shape_I[0])
@@ -43,18 +54,12 @@ def t_eye_hat(shape_I):
     return I
 
 
-def fdiag(d):
-    # d is a tensor of size k x n2 x ... x nd
-    # Turn d into a facewise diagonal tensor of size k x k x n2 x ... x nd
-    D = np.zeros([d.shape[0], d.shape[0], *d.shape[1:]])
-    idx = np.arange(d.shape[0])
-    D[idx, idx] = d
-
-    return D
+def f_tran(A):
+    return np.swapaxes(A, 0, 1)
 
 
 # ==================================================================================================================== #
-def facewise_t_svd(A, k=None):
+def f_svd(A, k=None):
     # default, but have to form full tensors u and vh before truncating
     # could be too expensive with larger data, and a loop may be preferable
 
@@ -76,24 +81,39 @@ def facewise_t_svd(A, k=None):
     vh = np.moveaxis(vh, [-2, -1], [0, 1])
     vh = vh[:k]
 
-    return u, s, vh
+    # store any useful statistics
+    stats = dict()
+    nrm_A = norm(A)
+    stats['rank'] = k
+    stats['nrm_Ahat'] = nrm_A
+    stats['nrm_A'] = nrm_A
+    stats['err'] = np.sqrt(np.abs(nrm_A ** 2 - np.sum(s ** 2)))
+    stats['rel_err'] = stats['err'] / stats['nrm_A']
+    stats['total_storage'] = u.size + vh.size
+    stats['compression_ratio'] = A.size / stats['total_storage']
+
+    return u, s, vh, stats
 
 
-def facewise_t_svdII(A, gamma, compress_UV=False):
+def f_svdII(A, gamma, compress_UV=False, implicit_rank=None):
 
     # compute full t-svd
-    U, s, VH = facewise_t_svd(A)
+    U, s, VH, svd_stats = f_svd(A)
+    nrm_A = svd_stats['nrm_A']
 
-    if gamma is not None and gamma < 1:
-        d2 = np.flip(np.sort(s.reshape(-1) ** 2))
-
-        idx = np.argwhere(np.cumsum(d2) / np.sum(d2) < gamma)[-1]
-
-        cutoff = np.sqrt(d2[idx])
-
-        s[s < cutoff] = 0
+    if implicit_rank is None:
+        if gamma is not None and gamma < 1:
+            d2 = np.flip(np.sort(s.reshape(-1) ** 2))
+            idx = np.argwhere(np.cumsum(d2) / np.sum(d2) < gamma)[-1]
+            cutoff = np.sqrt(d2[idx])
+            s[s < cutoff] = 0
+    else:
+        idx = np.flip(np.argsort(s.reshape(-1) ** 2))
+        cutoff_idx = idx[implicit_rank:]
+        s[cutoff_idx] = 0
 
     multi_rank = np.sum(s.reshape(s.shape[0], -1) != 0, axis=0)
+    implicit_rank = np.count_nonzero(s)
 
     if gamma is not None and gamma < 1 and compress_UV:
         # zero out columns/rows corresponding to zero singular values
@@ -110,5 +130,14 @@ def facewise_t_svdII(A, gamma, compress_UV=False):
         U = np.reshape(U, shape_U)
         VH = np.reshape(VH, shape_VH)
 
-    return U, s, VH, multi_rank
+    stats = dict()
+    stats['nrm_Ahat'] = nrm_A
+    stats['implicit_rank'] = implicit_rank
+    stats['multi_rank'] = multi_rank
+    stats['err'] = np.sqrt(nrm_A ** 2 - np.sum(s ** 2))
+    stats['rel_err'] = stats['err'] / nrm_A
+    stats['total_storage'] = implicit_rank * math.prod(A.shape[2:]) * (A.shape[0] + A.shape[1])
+    stats['compression_ratio'] = A.size / stats['total_storage']
+
+    return U, s, VH, stats
 

@@ -74,5 +74,14 @@ def fold(A, shape_A, dim=1):
     A = reshape(A, shape_A[:dim] + shape_A[dim + 1:] + (-1,))
     return np.moveaxis(A, -1, dim)
 
+# ==================================================================================================================== #
+# facewise diagonal
+def f_diag(d):
+    # d is a tensor of size k x n2 x ... x nd
+    # Turn d into a facewise diagonal tensor of size k x k x n2 x ... x nd
+    D = np.zeros([d.shape[0], d.shape[0], *d.shape[1:]])
+    idx = np.arange(d.shape[0])
+    D[idx, idx] = d
 
+    return D
 

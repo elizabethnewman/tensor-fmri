@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 
 def montage_array(A, num_col=None, cmap='viridis', names=None):
     # assume A is a 3D tensor for now
+    # images from frontal slices
 
     assert np.ndim(A) == 3, "Montage array only available for third-order tensors"
 
@@ -34,4 +35,39 @@ def montage_array(A, num_col=None, cmap='viridis', names=None):
         cb.set_ticklabels(names)
 
     return img
+
+
+def slice_subplots(A, axis=-1, num_slices=25, title='', num_col=None):
+    # assume A is a 3D tensor for now
+    # images from frontal slices
+
+    assert np.ndim(A) == 3 or np.ndim(A) == 4, "Montage array only available for third- or fourth-order tensors"
+
+    # permute
+    A = np.moveaxis(A, axis, -1)
+
+    m1, m2, m3 = A.shape
+    m3 = min(m3, num_slices)
+
+    if num_col is None:
+        num_col = np.ceil(np.sqrt(m3)).astype(np.int64)
+
+    num_row = np.ceil(m3 / num_col).astype(np.int64)
+
+    fig = plt.figure()
+    count = 0
+    for i in range(num_row):
+        for j in range(num_col):
+            plt.subplot(num_row, num_col, count + 1)
+            plt.imshow(A[:, :, count])
+            plt.axis('off')
+            count += 1
+            if count >= A.shape[-1]:
+                break
+
+
+    fig.suptitle(title)
+    plt.subplots_adjust(bottom=0.1, right=0.8, top=0.9)
+    cax = plt.axes([0.85, 0.1, 0.075, 0.8])
+    plt.colorbar(cax=cax)
 

@@ -21,7 +21,7 @@ def modek_product_one_dimension(A, M, k, transpose=False):
 
     # apply M to tubes of A (note that the transpose is reversed because we apply M on the right)
     if transpose:
-        A_hat = np.moveaxis(A, k, -1) @ M
+        A_hat = np.moveaxis(A, k, -1) @ np.conjugate(M)
     else:
         A_hat = np.moveaxis(A, k, -1) @ M.T
 
@@ -40,7 +40,7 @@ def modek_product(A, M, axis=None, transpose=False):
         M = (M,)
 
     if axis is None:
-        # default: apply to first dimension
+        # default: apply to first dimensions
         axis = np.arange(len(M))
     else:
         axis = make_axis_iterable(axis)

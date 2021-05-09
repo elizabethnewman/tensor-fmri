@@ -1,10 +1,12 @@
 import numpy as np
+from numpy.linalg import norm
 from numpy.testing import assert_array_almost_equal
 from tensor.utils import assert_compatile_sizes_facewise, reshape
-import tensor.facewise as fprod
+import tensor.f_product as fprod
 from scipy.fft import dct, idct
 
-def t_dct(A, norm='ortho'):
+
+def c_transform(A, norm='ortho'):
     # apply one-dimensional fft along last 2 through d dimensions of A
     ndim = np.ndim(A)
 
@@ -14,7 +16,7 @@ def t_dct(A, norm='ortho'):
     return A
 
 
-def t_idct(A, norm='ortho'):
+def c_itransform(A, norm='ortho'):
     # apply one-dimensional ifft along last d through 2 dimensions of A (order doesn't matter)
     ndim = np.ndim(A)
     for i in range(ndim - 1, 1, -1):
@@ -24,19 +26,19 @@ def t_idct(A, norm='ortho'):
 
 # ==================================================================================================================== #
 # c-product
-def c_product(A, B):
+def c_prod(A, B):
 
     assert_compatile_sizes_facewise(A, B)
 
     # move to transform domain
-    A_hat = t_dct(A)
-    B_hat = t_dct(B)
+    A_hat = c_transform(A)
+    B_hat = c_transform(B)
 
     # compute facewise product
-    C_hat = fprod.facewise_product(A_hat, B_hat)
+    C_hat = fprod.f_prod(A_hat, B_hat)
 
     # return to spatial comain
-    C = t_idct(C_hat)
+    C = c_itransform(C_hat)
 
     # ensure C is real-valued
     assert_array_almost_equal(np.imag(C), np.zeros_like(C))
@@ -45,12 +47,12 @@ def c_product(A, B):
     return C
 
 
-def c_product_eye(shape_I):
+def c_eye(shape_I):
     assert shape_I[0] == shape_I[1], "Identity tensor must have square frontal slices"
 
     # create identity tube
     id_tube_hat = np.ones([1, 1, *shape_I[2:]])
-    id_tube = t_idct(id_tube_hat)
+    id_tube = c_itransform(id_tube_hat)
 
     I = np.zeros(shape_I)
     idx = np.arange(shape_I[0])
@@ -59,9 +61,10 @@ def c_product_eye(shape_I):
     return I
 
 
-def c_transpose(A):
+def c_tran(A):
 
     return np.swapaxes(A, 0, 1)
+
 
 # ==================================================================================================================== #
 def c_svd(A, k=None):
@@ -70,31 +73,31 @@ def c_svd(A, k=None):
     shape_A = A.shape
 
     # transform
-    A = t_dct(A)
+    A = c_transform(A)
 
-    U, s, VH = fprod.facewise_t_svd(A, k)
+    U, s, VH, stats = fprod.f_svd(A, k)
+    stats['nrm_A'] = norm(A)
 
     # return to spatial domain
-    U = t_idct(U)
-    S = reshape(t_idct(np.reshape(s, (1, *s.shape))), (s.shape[0], *shape_A[2:]))  # remove first dimension
-    VH = t_idct(VH)
+    U = c_itransform(U)
+    S = reshape(c_itransform(np.reshape(s, (1, *s.shape))), (s.shape[0], *shape_A[2:]))  # remove first dimension
+    VH = c_itransform(VH)
 
-    return U, S, VH
+    return U, S, VH, stats
 
 
-def c_svdII(A, gamma, compress_UV=True, return_spatial=True):
+def c_svdII(A, gamma, compress_UV=True, return_spatial=True, implicit_rank=None):
     # A = U * fdiag(S) * VH
 
     # transform
-    A = t_dct(A)
-    # nrm_Ahat = np.linalg.norm(A)
+    A = c_transform(A)
 
-    U, S, VH, multi_rank = fprod.facewise_t_svdII(A, gamma, compress_UV=compress_UV)
-
+    U, S, VH, stats = fprod.f_svdII(A, gamma, compress_UV=compress_UV, implicit_rank=implicit_rank)
+    stats['nrm_A'] = norm(A)
     # return to spatial domain
     if return_spatial:
-        U = t_idct(U)
-        S = t_idct(reshape(S, (1, *S.shape)))[0]   # remove first dimension
-        VH = t_idct(VH)
+        U = c_itransform(U)
+        S = c_itransform(reshape(S, (1, *S.shape)))[0]   # remove first dimension
+        VH = c_itransform(VH)
 
-    return U, S, VH, multi_rank
+    return U, S, VH, stats
