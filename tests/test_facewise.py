@@ -4,6 +4,7 @@ from numpy.linalg import norm
 from numpy.testing import assert_array_almost_equal, assert_array_equal
 import tensor.facewise as fprod
 from tensor.utils import reshape
+import time
 
 # ==================================================================================================================== #
 # facewise diagonal
@@ -67,6 +68,31 @@ for k in range(0, min(A.shape[0], A.shape[1])):
     err1 = norm(A - Ak) ** 2
     err2 = np.sum(s[k + 1:] ** 2)
     print('%0.2e' % abs(err1 - err2))
+
+# ==================================================================================================================== #
+# test facewise fast
+
+k = 5
+
+for n in (10, 50, 100, 500):
+    shape_A = (n, n, 1000)
+    A = randn(*shape_A)
+
+    start1 = time.time()
+    u1, s1, vh1 = fprod.facewise_t_svd(A, k)
+    end1 = time.time()
+    print('time1 = %0.4e' % (end1 - start1))
+
+    start2 = time.time()
+    u2, s2, vh2 = fprod.facewise_t_svd_fast(A, k)
+    end2 = time.time()
+    print('time2 = %0.4e' % (end2 - start2))
+
+    assert_array_almost_equal(u1, u2)
+    assert_array_almost_equal(s1, s2)
+    assert_array_almost_equal(vh1, vh2)
+
+
 
 # ==================================================================================================================== #
 # facewise tsvdII

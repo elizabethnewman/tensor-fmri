@@ -3,7 +3,6 @@ from numpy.linalg import svd
 from numpy.testing import assert_array_almost_equal
 from tensor.utils import assert_compatile_sizes_facewise
 
-
 # ==================================================================================================================== #
 # facewise
 def facewise_product(A, B):
@@ -53,14 +52,11 @@ def fdiag(d):
 
     return D
 
+
 # ==================================================================================================================== #
 def facewise_t_svd(A, k=None):
-    # A = U * fdiag(S) * VH
-
-    shape_A = A.shape
-
-    # transform into third-order tensor
-    A = np.reshape(A, (A.shape[0], A.shape[1], -1))
+    # default, but have to form full tensors u and vh before truncating
+    # could be too expensive with larger data, and a loop may be preferable
 
     # determine sizes
     if k is None:
@@ -68,24 +64,19 @@ def facewise_t_svd(A, k=None):
     else:
         k = min(k, min(A.shape[0], A.shape[1]))
 
-    # pre-allocate
-    U = np.zeros((A.shape[0], k, A.shape[2]), dtype=A.dtype)
-    S = np.zeros((k, A.shape[2]), dtype=np.float64)
-    VH = np.zeros((k, A.shape[1], A.shape[2]), dtype=A.dtype)
+    A = np.moveaxis(A, [0, 1], [-2, -1])
+    u, s, vh = svd(A, full_matrices=False)
 
-    # form SVD
-    for i in range(A.shape[2]):
-        u, s, vh = svd(A[:, :, i], full_matrices=False)
-        U[:, :, i] = u[:, :k]
-        S[:, i] = s[:k]
-        VH[:, :, i] = vh[:k, :]
+    u = np.moveaxis(u, [-2, -1], [0, 1])
+    u = u[:, :k]
 
-    # reshape
-    U = np.reshape(U, (U.shape[0], U.shape[1], *shape_A[2:]))
-    S = np.reshape(S, (S.shape[0], *shape_A[2:]))
-    VH = np.reshape(VH, (VH.shape[0], VH.shape[1], *shape_A[2:]))
+    s = np.moveaxis(s, -1, 0)
+    s = s[:k]
 
-    return U, S, VH
+    vh = np.moveaxis(vh, [-2, -1], [0, 1])
+    vh = vh[:k]
+
+    return u, s, vh
 
 
 def facewise_t_svdII(A, gamma, compress_UV=False):

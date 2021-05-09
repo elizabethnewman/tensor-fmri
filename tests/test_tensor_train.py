@@ -13,7 +13,7 @@ A = randn(*shape_A)
 A = A / norm(A)
 
 # higher tolerance means worse approximation, but more compression
-tol = 0.1
+tol = 0
 dim_order = permutation(np.arange(len(shape_A)))
 
 G, ranks = ttsvd(A, tol, dim_order=dim_order, ranks=None)
