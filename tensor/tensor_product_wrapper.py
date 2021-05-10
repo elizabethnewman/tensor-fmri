@@ -165,6 +165,6 @@ def ten_svdII(A, gamma, prod_type='tprod', M=None, compress_UV=False, return_spa
                                         implicit_rank=implicit_rank)
 
     else:
-        raise ValueError(prod_type + ' not yet implemented')
+        raise ValueError(prod_type + ' nprojection(A, U, prod_type)ot yet implemented')
 
     return u, s, vh, stats

@@ -1,7 +1,6 @@
 import numpy as np
 from numpy.linalg import svd, norm
-from numpy.testing import assert_array_almost_equal
-from tensor.utils import assert_compatile_sizes_facewise
+from tensor.utils import assert_compatile_sizes_facewise, reshape
 import math
 
 
@@ -101,34 +100,13 @@ def f_svdII(A, gamma, compress_UV=False, implicit_rank=None):
     U, s, VH, svd_stats = f_svd(A)
     nrm_A = svd_stats['nrm_A']
 
-    if implicit_rank is None:
-        if gamma is not None and gamma < 1:
-            d2 = np.flip(np.sort(s.reshape(-1) ** 2))
-            idx = np.argwhere(np.cumsum(d2) / np.sum(d2) < gamma)[-1]
-            cutoff = np.sqrt(d2[idx])
-            s[s < cutoff] = 0
-    else:
-        idx = np.flip(np.argsort(s.reshape(-1) ** 2))
-        cutoff_idx = idx[implicit_rank:]
-        s[cutoff_idx] = 0
-
-    multi_rank = np.sum(s.reshape(s.shape[0], -1) != 0, axis=0)
+    # truncate singular values
+    s = f_svdII_cutoff(s, gamma, implicit_rank=implicit_rank)
+    multi_rank = np.sum(reshape(s, (s.shape[0], -1)) != 0, axis=0)
     implicit_rank = np.count_nonzero(s)
 
-    if gamma is not None and gamma < 1 and compress_UV:
-        # zero out columns/rows corresponding to zero singular values
-        shape_U = U.shape
-        shape_VH = VH.shape
-
-        U = np.reshape(U, (U.shape[0], U.shape[1], -1))
-        VH = np.reshape(VH, (VH.shape[0], VH.shape[1], -1))
-
-        for i in range(min(multi_rank), max(multi_rank)):
-            U[:, i:, multi_rank <= i] = 0
-            VH[i:, :, multi_rank <= i] = 0
-
-        U = np.reshape(U, shape_U)
-        VH = np.reshape(VH, shape_VH)
+    if compress_UV:
+        U, s, VH = f_svdII_compress_UV(U, s, VH, multi_rank)
 
     stats = dict()
     stats['nrm_Ahat'] = nrm_A
@@ -136,8 +114,58 @@ def f_svdII(A, gamma, compress_UV=False, implicit_rank=None):
     stats['multi_rank'] = multi_rank
     stats['err'] = np.sqrt(nrm_A ** 2 - np.sum(s ** 2))
     stats['rel_err'] = stats['err'] / nrm_A
-    stats['total_storage'] = implicit_rank * math.prod(A.shape[2:]) * (A.shape[0] + A.shape[1])
+    stats['total_storage'] = implicit_rank * (A.shape[0] + A.shape[1])
     stats['compression_ratio'] = A.size / stats['total_storage']
 
     return U, s, VH, stats
 
+
+def f_svdII_cutoff(s, gamma, implicit_rank=None):
+    if implicit_rank is None:
+        if gamma is not None and gamma < 1:
+            d2 = np.flip(np.sort(reshape(s, -1) ** 2))
+            idx = np.argwhere(np.cumsum(d2) / np.sum(d2) < gamma)
+
+            if len(idx) < 1:
+                idx = 0
+            else:
+                idx = idx[-1]
+
+            cutoff = np.sqrt(d2[idx])
+            s[s < cutoff] = 0
+    else:
+        shape_s = s.shape
+        s = reshape(s, -1)
+        idx = np.flip(np.argsort(s ** 2))
+        cutoff_idx = idx[implicit_rank:]
+        s[cutoff_idx] = 0
+        s = reshape(s, shape_s)
+
+    return s
+
+
+def f_svdII_compress_UV(U, s, VH, multi_rank):
+
+    m = np.max(multi_rank)
+    U = U[:, :m]
+    s = s[:m]
+    VH = VH[:m, :]
+
+    # # the correct way to do this, but problems with complex arithmetic
+    # shape_U = U.shape
+    # shape_s = s.shape
+    # shape_VH = VH.shape
+    # U = reshape(U, (U.shape[0], U.shape[1], -1))
+    # s = reshape(s, (s.shape[0], -1))
+    # VH = reshape(VH, (VH.shape[0], VH.shape[1], -1))
+    #
+    # for i in range(min(multi_rank), max(multi_rank) + 1):
+    #     U[:, i:, multi_rank <= i] = 0
+    #     s[i:, multi_rank <= i] = 0
+    #     VH[i:, :, multi_rank <= i] = 0
+    #
+    # U = reshape(U, shape_U)
+    # s = reshape(s, shape_s)
+    # VH = reshape(VH, shape_VH)
+
+    return U, s, VH

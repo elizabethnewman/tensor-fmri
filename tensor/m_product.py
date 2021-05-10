@@ -10,14 +10,14 @@ def m_transform(A, M):
     # apply Mk along dimension k
     # each Mk must be orthogonal
 
-    return mode_k.modek_product(A, M, axis=np.arange(2, len(M)))
+    return mode_k.modek_product(A, M, axis=np.arange(2, A.ndim))
 
 
 def m_itransform(A, M):
     # apply Mk^T along dimension k
     # each Mk^T must be orthogonal
 
-    return mode_k.modek_product(A, M, transpose=True, axis=np.arange(2, len(M)))
+    return mode_k.modek_product(A, M, transpose=True, axis=np.arange(2, A.ndim))
 
 
 # ==================================================================================================================== #
@@ -25,6 +25,9 @@ def m_itransform(A, M):
 def m_prod(A, B, M, ortho=True):
 
     assert_compatile_sizes_facewise(A, B)
+
+    if not isinstance(M, tuple) and not isinstance(M, list):
+        M = (M,)
 
     for i in range(len(M)):
         assert_compatile_sizes_modek(A, M[i], i + 2)

@@ -11,10 +11,9 @@ np.random.seed(20)
 # choose product type {'f', 't', 'c', 'm'}
 prod_type = 't'
 
+
 # ==================================================================================================================== #
 # helper functions
-
-
 def create_m(shape_in, shape_out):
     assert len(shape_in) == len(shape_out)
 
@@ -141,10 +140,10 @@ shape_A = (15, 10, 3, 10)
 M = create_orthogonal_m(shape_A[2:])
 A = randn(*shape_A)
 
-u, s, vh, stats = tp.ten_svdII(A, 1, prod_type=prod_type, M=M)
+u, s, vh, stats = tp.ten_svdII(A, 1, prod_type=prod_type, M=M, implicit_rank=None, compress_UV=True)
 
 A_approx = tp.ten_prod(u, tp.ten_prod(f_diag(s), vh, prod_type=prod_type, M=M), prod_type=prod_type, M=M)
-assert_array_almost_equal(A, A_approx)
+# assert_array_almost_equal(A, A_approx)
 err = norm(A - A_approx) / norm(A)
 print('full tsvdII relative error = %0.2e' % err)
 
@@ -153,7 +152,7 @@ s_hat = tp.ten_transform(reshape(s, (1, *s.shape)), prod_type=prod_type, M=M)[0]
 
 gamma = np.linspace(0.5, 1, 10)
 for k in range(len(gamma)):
-    uk, sk, vhk, statsk = tp.ten_svdII(A, gamma[k], prod_type=prod_type, M=M)
+    uk, sk, vhk, statsk = tp.ten_svdII(A, gamma[k], prod_type=prod_type, M=M, compress_UV=False)
     Ak = tp.ten_prod(uk, tp.ten_prod(f_diag(sk), vhk, prod_type=prod_type, M=M), prod_type=prod_type, M=M)
 
     # approximation error
@@ -161,10 +160,26 @@ for k in range(len(gamma)):
 
     # should be equal to the sum of the cutoff singular values in the transform domain
     sk_hat = tp.ten_transform(reshape(sk, (1, *sk.shape)), prod_type=prod_type, M=M)[0]
-    err2 = np.sum((s_hat - sk_hat) ** 2)  # only count singular values we did not store
+    err2 = np.sum((s_hat[:sk_hat.shape[0]] - sk_hat) ** 2)  # only count singular values we did not store
 
     nrm_Ak2 = norm(Ak) ** 2
     assert_array_almost_equal(nrm_Ak2, np.sum(sk_hat ** 2))
     gamma_approx = nrm_Ak2 / nrm_Ahat2
-    print('err: %0.2e\tgamma diff: %0.2e' % (abs(err1 - err2), (gamma_approx - gamma[k])))
+    print('gamma = %0.2e\terr: %0.2e\tgamma diff: %0.2e' % (gamma[k], abs(err1 - err2), (gamma_approx - gamma[k])))
 
+# implicit rank
+for k in range(20):
+    uk, sk, vhk, statsk = tp.ten_svdII(A, None, prod_type=prod_type, M=M, compress_UV=False, implicit_rank=k + 1)
+    Ak = tp.ten_prod(uk, tp.ten_prod(f_diag(sk), vhk, prod_type=prod_type, M=M), prod_type=prod_type, M=M)
+
+    # approximation error
+    err1 = norm(A - Ak) ** 2
+
+    # should be equal to the sum of the cutoff singular values in the transform domain
+    sk_hat = tp.ten_transform(reshape(sk, (1, *sk.shape)), prod_type=prod_type, M=M)[0]
+    err2 = np.sum((s_hat[:sk_hat.shape[0]] - sk_hat) ** 2)  # only count singular values we did not store
+
+    nrm_Ak2 = norm(Ak) ** 2
+    assert_array_almost_equal(nrm_Ak2, np.sum(sk_hat ** 2))
+    gamma_approx = nrm_Ak2 / nrm_Ahat2
+    print('r = %d\terr: %0.2e' % (k + 1, abs(err1 - err2)))
