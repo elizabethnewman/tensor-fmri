@@ -24,8 +24,8 @@ def t_itransform(A):
     for i in range(ndim - 1, 1, -1):
         A = ifft(A, axis=i, norm='ortho')
 
-    # ensure A is real-valued (a somewhat expensive, but necessary check)
-    assert_array_almost_equal(np.imag(A), np.zeros_like(A))
+    # ensure A is real-valued (a somewhat expensive, but useful check)
+    # assert_array_almost_equal(np.imag(A), np.zeros_like(A))
     A = np.real(A)
 
     return A
