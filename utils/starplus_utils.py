@@ -5,7 +5,7 @@ from utils.general_utils import rescale
 
 def convert_trial_to_tensor(star_plus_data, trial_idx):
 
-    num_time_points =  star_plus_data['data'][trial_idx][0].shape[0]
+    num_time_points = star_plus_data['data'][trial_idx][0].shape[0]
 
     dim_x = star_plus_data['meta']['dimx'].item().item()
     dim_y = star_plus_data['meta']['dimy'].item().item()

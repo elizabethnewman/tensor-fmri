@@ -40,13 +40,13 @@ def init():
 
 
 def load(path="data/"):
-    with open(path + "mnist.pkl",'rb') as f:
+    with open(path + "mnist.pkl", 'rb') as f:
         mnist = pickle.load(f)
     return mnist["training_images"], mnist["training_labels"], mnist["test_images"], mnist["test_labels"]
 
 
-def load_tensor(num_per_class_train=100, num_per_class_test=10, num_classes=10):
-    x_train, t_train, x_test, t_test = load()
+def load_tensor(num_per_class_train=100, num_per_class_test=10, num_classes=10, path="data/"):
+    x_train, t_train, x_test, t_test = load(path)
 
     training_data = np.empty([0, 28, 28])
     test_data = np.empty([0, 28, 28])
