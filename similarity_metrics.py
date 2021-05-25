@@ -2,6 +2,7 @@ import numpy as np
 from numpy.linalg import norm
 import math
 import cv2
+from utils.general_utils import prod
 
 
 def frobenius_metric(A, B, axis=None):
@@ -9,7 +10,7 @@ def frobenius_metric(A, B, axis=None):
     A = np.swapaxes(A, 0, axis)
     B = np.swapaxes(B, 0, axis)
     all_axis = tuple([i for i in range(1, A.ndim)])
-    return np.sqrt(np.sum((A - B) ** 2, axis=all_axis)) / math.prod(A.shape[1:])
+    return np.sqrt(np.sum((A - B) ** 2, axis=all_axis)) / prod(A.shape[1:])
 
 
 def cosine_metric(A, B, axis=None):
