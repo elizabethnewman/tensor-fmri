@@ -4,7 +4,8 @@ from numpy.testing import assert_array_almost_equal
 import tensor.f_product as fprod
 from tensor.utils import assert_compatile_sizes_facewise, reshape
 from scipy.fft import fft, ifft
-from math import prod
+# from math import prod
+from utils.general_utils import prod
 
 # ==================================================================================================================== #
 # transforms

@@ -12,3 +12,10 @@ def rescale(x, low=0, high=1):
     x += low
 
     return x
+
+
+def prod(a):
+    n = 1
+    for ai in a:
+        n *= ai
+    return n
