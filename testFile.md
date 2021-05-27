@@ -7,6 +7,3 @@ Tensor-based approaches for fMRI classification
 
 * Brett W. Bader, Tamara G. Kolda and others, Tensor Toolbox for MATLAB, Version 3.2.1, [www.tensortoolbox.org](https://www.tensortoolbox.org/), April 5, 2021.
 
-### Tensor-Train
-
-* Ivan Oseledets' [TT-Toolbox](https://github.com/oseledets/TT-Toolbox)
