@@ -1,6 +1,10 @@
 # tensor-fmri
 Tensor-based approaches for fMRI classification
 
+### Introductary Notebooks in Google Colab
+[![Open In Colab](https://colab.research.google.com/drive/1Q4thsn05guspfAl4RuLdrfI3SjTZTiNA#scrollTo=r6Pdn4H9RSyI&uniqifier=1)
+
+
 ## Coding Resources
 
 ### HOSVD
