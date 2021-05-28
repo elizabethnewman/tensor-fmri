@@ -66,8 +66,8 @@ def slice_subplots(A, axis=-1, num_slices=25, title='', num_col=None):
                 break
 
 
-    fig.suptitle(title)
-    plt.subplots_adjust(bottom=0.1, right=0.8, top=0.9)
-    cax = plt.axes([0.85, 0.1, 0.075, 0.8])
-    plt.colorbar(cax=cax)
+    # fig.suptitle(title)
+    # plt.subplots_adjust(bottom=0.1, right=0.8, top=0.9)
+    # cax = plt.axes([0.85, 0.1, 0.075, 0.8])
+    # plt.colorbar(cax=cax)
 
