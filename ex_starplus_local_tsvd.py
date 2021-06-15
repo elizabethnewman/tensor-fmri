@@ -29,12 +29,7 @@ np.random.seed(20)
 
 
 # visualize data
-for i in range(num_classes):
-    slice_subplots(test_data[:, test_labels == i, :], axis=1, title='class ' + str(i))
-    plt.show()
-
-print(test_data.shape)
-print(test_labels)
+# use the existing tools or write your own!
 
 # ==================================================================================================================== #
 # form local t-svd
@@ -47,9 +42,7 @@ for i in range(num_classes):
     U.append(u)
 
 # visualizations
-for i in range(num_classes):
-    slice_subplots(U[i], axis=1, title='basis elments for class ' + str(i))
-    plt.show()
+# use the existing tools or write your own!
 
 
 # ==================================================================================================================== #
@@ -91,8 +84,4 @@ plt.show()
 
 # ==================================================================================================================== #
 # visualizations of projected tensors
-for j in range(num_classes):
-    for i in range(num_classes):
-        A = projection(training_data[:, training_labels == j, :], U[i], prod_type=prod_type)
-        slice_subplots(A[:, :4, :], axis=1, title='projection of class ' + str(j) + ' onto basis for class ' + str(i))
-        plt.show()
+# use the existing tools or write your own!
