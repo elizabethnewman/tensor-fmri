@@ -29,7 +29,7 @@ MNIST Example:
 
 ### Resources
 
-* Kernfeld, Kilmer, and Aeron. [https://www.sciencedirect.com/science/article/pii/S0024379515004358](Tensor-tensor products with invertible linear transforms). *Linear Algebra and its Applications*, 485:545–570, 11 2015 
+* Kernfeld, Kilmer, and Aeron. [Tensor-tensor products with invertible linear transforms](https://www.sciencedirect.com/science/article/pii/S0024379515004358). *Linear Algebra and its Applications*, 485:545–570, 11 2015 
 
 
 
