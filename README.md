@@ -3,7 +3,7 @@ Tensor-based approaches for fMRI classification
 
 ### Introductary Notebooks in Google Colab
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1Q4thsn05guspfAl4RuLdrfI3SjTZTiNA#scrollTo=r6Pdn4H9RSyI&uniqifier=1)
-
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1KG29iU366NHc_5fbJoAEgAxT4OkE5vzG#scrollTo=r6Pdn4H9RSyI)
 
 ## Coding Resources
 
