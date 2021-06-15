@@ -1,13 +1,15 @@
 # tensor-fmri
 Tensor-based approaches for fMRI classification
 
+ADD BRIEF DESCRIPTION (why should researchers want to use this code?)
+
 ```latex
 Here is where we will add the citation to the paper.
 ```
 
 ### Installation and Requirements
 ```angular2html
-cd <directory to store code></directory>
+cd <directory to store code>
 git clone https://github.com/elizabethnewman/tensor-fmri.git
 ```
 Requirements:
