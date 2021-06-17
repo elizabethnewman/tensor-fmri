@@ -126,8 +126,8 @@ def m_storage(M):
     if isinstance(M, tuple) or isinstance(M, list):
         n = 0
         for i in range(len(M)):
-            n += M.shape[1]
+            n += M[i].size
     else:
-        n = M.shape[1]
+        n = M.size
 
     return n
