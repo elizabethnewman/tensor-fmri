@@ -1,7 +1,7 @@
 # tensor-fmri
 
 
-Using tensor-based approaches to classify fMRI data from StarPLUS. 
+Using tensor-based approaches to classify fMRI data from [StarPLUS](http://www.cs.cmu.edu/afs/cs.cmu.edu/project/theo-81/www/). 
 
 ```latex
 Here is where we will add the citation to the paper.
