@@ -22,7 +22,7 @@ Requirements:
 
 * tensor
 
-<li>Functions for all the needed tensor products and tensor SVD.</li>
+Functions for all the needed tensor products and tensor SVD.
 
 * tests
 
