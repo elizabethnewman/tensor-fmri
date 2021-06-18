@@ -18,7 +18,14 @@ Requirements:
 
 ### Organization
 
-* test
+* data
+
+* tensor
+Functions for all the needed tensor products and tensor SVD.
+* tests
+internal use to check code
+* utils
+Includes visualization tools and pre-processing tools.
 
 ### Introductary Notebooks in Google Colab
 
