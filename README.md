@@ -18,7 +18,7 @@ Requirements:
 
 ### Organization
 
-\test
+* test
 
 ### Introductary Notebooks in Google Colab
 
