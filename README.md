@@ -1,7 +1,7 @@
 # tensor-fmri
-Tensor-based approaches for fMRI classification
 
-ADD BRIEF DESCRIPTION test testt test
+
+Using tensor-based approaches to classify fMRI data from StarPLUS. 
 
 ```latex
 Here is where we will add the citation to the paper.
