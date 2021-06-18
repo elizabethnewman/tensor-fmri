@@ -1,7 +1,7 @@
 # tensor-fmri
 Tensor-based approaches for fMRI classification
 
-ADD BRIEF DESCRIPTION (why should researchers want to use this code?)
+ADD BRIEF DESCRIPTION test testt test
 
 ```latex
 Here is where we will add the citation to the paper.
