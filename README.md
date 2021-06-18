@@ -1,7 +1,7 @@
 # tensor-fmri
-Tensor-based approaches for fMRI classification
 
-ADD BRIEF DESCRIPTION (why should researchers want to use this code?)
+
+Using tensor-based approaches to classify fMRI data from [StarPLUS](http://www.cs.cmu.edu/afs/cs.cmu.edu/project/theo-81/www/). 
 
 ```latex
 Here is where we will add the citation to the paper.
@@ -18,7 +18,19 @@ Requirements:
 
 ### Organization
 
-ADD BRIEF DESCRIPTION
+* data
+
+* tensor
+
+<li>Functions for all the needed tensor products and tensor SVD.</li>
+
+* tests
+
+internal use to check code
+
+* utils
+
+Includes visualization tools and pre-processing tools.
 
 ### Introductary Notebooks in Google Colab
 
