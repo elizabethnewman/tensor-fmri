@@ -20,6 +20,8 @@ Requirements:
 
 * data
 
+data for testing, training and test images
+
 * tensor
 
 Functions for all the needed tensor products and tensor SVD.
