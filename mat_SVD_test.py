@@ -49,23 +49,39 @@ num_classes = len(np.unique(labels)) #should be 2
 
 #creating a matrix of training data from the training picture tensor
 p_training_trials, p_training_dimx, p_training_dimy, p_training_dimz, p_training_times = p_training_data.shape
+<<<<<<< HEAD
 print(p_training_data.shape)
 p_training_data_mat = p_training_data.reshape(p_training_trials,-1).T
+=======
+p_training_data_mat = p_training_data.reshape(-1,p_training_trials)
+>>>>>>> 9a69e02da0389e8789e9c36f413284f88fef2b49
 print(p_training_data_mat.shape)
 
 #creating a matrix of training data from the training sentence tensor
 s_training_trials, s_training_dimx, s_training_dimy, s_training_dimz, s_training_times = s_training_data.shape
+<<<<<<< HEAD
 s_training_data_mat = s_training_data.reshape(s_training_trials,-1).T
+=======
+s_training_data_mat = s_training_data.reshape(-1,s_training_trials)
+>>>>>>> 9a69e02da0389e8789e9c36f413284f88fef2b49
 print(s_training_data_mat.shape)
 
 #creating a matrix of test data from the test picture tensor
 p_test_trials, p_test_dimx, p_test_dimy, p_test_dimz, p_test_times = p_test_data.shape
+<<<<<<< HEAD
 p_test_data_mat = p_test_data.reshape(p_test_trials,-1).T
+=======
+p_test_data_mat = p_test_data.reshape(-1,p_test_trials)
+>>>>>>> 9a69e02da0389e8789e9c36f413284f88fef2b49
 print(p_test_data_mat.shape)
 
 #creating a matrix of test data from the test sentence tensor
 s_test_trials, s_test_dimx, s_test_dimy, s_test_dimz, s_test_times = s_test_data.shape
+<<<<<<< HEAD
 s_test_data_mat = s_test_data.reshape(s_test_trials,-1).T
+=======
+s_test_data_mat = s_test_data.reshape(-1,s_test_trials)
+>>>>>>> 9a69e02da0389e8789e9c36f413284f88fef2b49
 print(s_test_data_mat.shape)
 
 #creating a single matrix of training data
@@ -83,10 +99,15 @@ print(training_labels.shape)
 print(test_labels.shape)
 
 from sklearn.utils.extmath import randomized_svd
+<<<<<<< HEAD
 #s_U, s_S, s_VT = randomized_svd(s_training_data_mat, n_components=26, n_iter=5, random_state=None)
 #p_U, p_S, p_VT = randomized_svd(p_training_data_mat, n_components=4, n_iter=5, random_state=None)
 p_U, p_S, p_VT = np.linalg.svd(p_training_data_mat)
 s_U, s_S, s_VT = np.linalg.svd(s_training_data_mat)
+=======
+s_U, s_S, s_VT = randomized_svd(s_training_data_mat, n_components=26, n_iter=5, random_state=None)
+p_U, p_S, p_VT = randomized_svd(p_training_data_mat, n_components=26, n_iter=5, random_state=None)
+>>>>>>> 9a69e02da0389e8789e9c36f413284f88fef2b49
 
 # create the boolean array for training and testing
 boolean_list = []
@@ -138,3 +159,16 @@ test_accuracy = test_num_correct / test_data_mat.shape[1]
 
 print('train accuracy = %0.2f' % (100 * training_accuracy))
 print('test accuracy = %0.2f' % (100 * test_accuracy))
+<<<<<<< HEAD
+=======
+
+# plot results
+plt.figure()
+for i in range(num_classes):
+    plt.semilogy(training_error[i, :], 'o', label=i)
+
+plt.xlabel('image index')
+plt.ylabel('distance score (lower is better)')
+plt.legend()
+plt.show()
+>>>>>>> 9a69e02da0389e8789e9c36f413284f88fef2b49
