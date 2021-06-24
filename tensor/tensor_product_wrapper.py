@@ -2,6 +2,7 @@ import tensor.f_product as fprod
 import tensor.t_product as tprod
 import tensor.c_product as cprod
 import tensor.m_product as mprod
+import tensor.cf_product as cfprod
 
 
 def get_prod_type(prod_type):
@@ -13,13 +14,15 @@ def get_prod_type(prod_type):
         prod_type = 'c'
     elif any(prod_type == s for s in ('mprod', 'm_prod', 'm_product', 'm')):
         prod_type = 'm'
+    elif any(prod_type == s for s in ('cfprod', 'c_prod', 'cf_product', 'cf')):
+        prod_type = 'cf'
     else:
         raise ValueError(prod_type + ' not yet implemented')
 
     return prod_type
 
 
-def ten_transform(A, prod_type='tprod', M=None):
+def ten_transform(A, dim_list=(), prod_type='tprod', M=None):
     prod_type = get_prod_type(prod_type)
 
     if prod_type == 't':
@@ -34,13 +37,16 @@ def ten_transform(A, prod_type='tprod', M=None):
     elif prod_type == 'm':
         C = mprod.m_transform(A, M=M)
 
+    elif prod_type == 'cf':
+        C = cfprod.cf_transform(A, dim_list)
+
     else:
         raise ValueError(prod_type + ' not yet implemented')
 
     return C
 
 
-def ten_itransform(A, prod_type='tprod', M=None):
+def ten_itransform(A,dim_list=(), prod_type='tprod', M=None):
     prod_type = get_prod_type(prod_type)
 
     if prod_type == 't':
@@ -55,13 +61,15 @@ def ten_itransform(A, prod_type='tprod', M=None):
     elif prod_type == 'm':
         C = mprod.m_itransform(A, M=M)
 
+    elif prod_type == 'cf':
+        C = cfprod.cf_itransform(A, dim_list)
     else:
         raise ValueError(prod_type + ' not yet implemented')
 
     return C
 
 
-def ten_prod(A, B, prod_type='tprod', M=None):
+def ten_prod(A, B, dim_list=(), prod_type='tprod', M=None):
 
     prod_type = get_prod_type(prod_type)
 
@@ -77,6 +85,8 @@ def ten_prod(A, B, prod_type='tprod', M=None):
     elif prod_type == 'm':
         C = mprod.m_prod(A, B, M)
 
+    elif prod_type == 'cf':
+        C = cfprod.cf_prod(A, B, dim_list)
     else:
         raise ValueError(prod_type + ' not yet implemented')
 
@@ -98,13 +108,16 @@ def ten_tran(A, prod_type='tprod'):
     elif prod_type == 'm':
         AT = mprod.m_tran(A)
 
+    elif prod_type == 'cf':
+        AT = cfprod.cf_tran(A)
+
     else:
         raise ValueError(prod_type + ' not yet implemented')
 
     return AT
 
 
-def ten_eye(shape_I, prod_type='tprod', M=None):
+def ten_eye(shape_I, dim_list=(), prod_type='tprod', M=None):
     prod_type = get_prod_type(prod_type)
 
     if prod_type == 't':
@@ -119,13 +132,16 @@ def ten_eye(shape_I, prod_type='tprod', M=None):
     elif prod_type == 'm':
         AT = mprod.m_eye(shape_I, M)
 
+    elif prod_type == 'cf':
+        AT = cfprod.cf_eye(shape_I, dim_list)
+
     else:
         raise ValueError(prod_type + ' not yet implemented')
 
     return AT
 
 
-def ten_svd(A, k=None, prod_type='tprod', M=None):
+def ten_svd(A, dim_list=(), k=None, prod_type='tprod', M=None):
     prod_type = get_prod_type(prod_type)
 
     if prod_type == 't':
@@ -140,13 +156,16 @@ def ten_svd(A, k=None, prod_type='tprod', M=None):
     elif prod_type == 'm':
         u, s, vh, stats = mprod.m_svd(A, M, k=k)
 
+    elif prod_type == 'cf':
+        u, s, vh, stats = cfprod.cf_svd(A, dim_list, k=k)
+
     else:
         raise ValueError(prod_type + ' not yet implemented')
 
     return u, s, vh, stats
 
 
-def ten_svdII(A, gamma, prod_type='tprod', M=None, compress_UV=False, return_spatial=True, implicit_rank=None):
+def ten_svdII(A, gamma, dim_list=(), prod_type='tprod', M=None, compress_UV=False, return_spatial=True, implicit_rank=None):
     prod_type = get_prod_type(prod_type)
 
     if prod_type == 't':
@@ -163,6 +182,10 @@ def ten_svdII(A, gamma, prod_type='tprod', M=None, compress_UV=False, return_spa
     elif prod_type == 'm':
         u, s, vh, stats = mprod.m_svdII(A, M, gamma, compress_UV=compress_UV, return_spatial=True,
                                         implicit_rank=implicit_rank)
+
+    elif prod_type == 'cf':
+        u, s, vh, stats = cfprod.cf_svdII(A, gamma, dim_list, compress_UV=compress_UV, return_spatial=True,
+                                          implicit_rank=implicit_rank)
 
     else:
         raise ValueError(prod_type + ' nprojection(A, U, prod_type)ot yet implemented')
