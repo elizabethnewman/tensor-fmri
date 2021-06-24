@@ -1,5 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from mpl_toolkits.axes_grid1.inset_locator import InsetPosition
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 
 def montage_array(A, num_col=None, cmap='viridis', names=None):
@@ -64,9 +66,8 @@ def slice_subplots(A, axis=-1, num_slices=25, title='', num_col=None):
             count += 1
             if count >= A.shape[-1]:
                 break
-
+        plt.subplots_adjust(bottom=0.1, right=0.8, top=0.9)
+        # cax = plt.axes([0.85, 0.1, 0.075, 0.8])
+        plt.colorbar()
     fig.suptitle(title)
-    # plt.subplots_adjust(bottom=0.1, right=0.8, top=0.9)
-    # cax = plt.axes([0.85, 0.1, 0.075, 0.8])
-    # plt.colorbar(cax=cax)
 
