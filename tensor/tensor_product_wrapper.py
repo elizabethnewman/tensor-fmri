@@ -3,7 +3,7 @@ import tensor.t_product as tprod
 import tensor.c_product as cprod
 import tensor.m_product as mprod
 import tensor.cf_product as cfprod
-
+import tensor.m_product_inv as mprod_inv
 
 def get_prod_type(prod_type):
     if any(prod_type == s for s in ('tprod', 't_prod', 't_product', 'fft', 't')):
@@ -16,6 +16,8 @@ def get_prod_type(prod_type):
         prod_type = 'm'
     elif any(prod_type == s for s in ('cfprod', 'c_prod', 'cf_product', 'cf')):
         prod_type = 'cf'
+    elif any(prod_type == s for s in ('minvprod', 'minv_prod', 'minv_product', 'minv')):
+        prod_type = 'minv'
     else:
         raise ValueError(prod_type + ' not yet implemented')
 
@@ -39,6 +41,9 @@ def ten_transform(A, dim_list=(), prod_type='tprod', M=None):
 
     elif prod_type == 'cf':
         C = cfprod.cf_transform(A, dim_list)
+        
+    elif prod_type == 'minv':
+        C = mprodinv.m_transform(A,M=M)
 
     else:
         raise ValueError(prod_type + ' not yet implemented')
@@ -63,6 +68,10 @@ def ten_itransform(A,dim_list=(), prod_type='tprod', M=None):
 
     elif prod_type == 'cf':
         C = cfprod.cf_itransform(A, dim_list)
+        
+    elif prod_type == 'minv':
+        C = mprod_inv.m_itransform(A, M=M)
+    
     else:
         raise ValueError(prod_type + ' not yet implemented')
 
@@ -87,6 +96,10 @@ def ten_prod(A, B, dim_list=(), prod_type='tprod', M=None):
 
     elif prod_type == 'cf':
         C = cfprod.cf_prod(A, B, dim_list)
+        
+    elif prod_type == 'minv':
+        C = mprod_inv.m_prod(A, B, M)
+    
     else:
         raise ValueError(prod_type + ' not yet implemented')
 
@@ -110,6 +123,9 @@ def ten_tran(A, prod_type='tprod'):
 
     elif prod_type == 'cf':
         AT = cfprod.cf_tran(A)
+        
+    elif prod_type == 'minv':
+        AT = mprod_inv.m_tran(A)
 
     else:
         raise ValueError(prod_type + ' not yet implemented')
@@ -134,6 +150,9 @@ def ten_eye(shape_I, dim_list=(), prod_type='tprod', M=None):
 
     elif prod_type == 'cf':
         AT = cfprod.cf_eye(shape_I, dim_list)
+        
+    elif prod_type == 'minv':
+        AT = mprod_inv.m_eye(shape_I, M)
 
     else:
         raise ValueError(prod_type + ' not yet implemented')
@@ -158,6 +177,9 @@ def ten_svd(A, dim_list=(), k=None, prod_type='tprod', M=None):
 
     elif prod_type == 'cf':
         u, s, vh, stats = cfprod.cf_svd(A, dim_list, k=k)
+        
+    elif prod_type == 'minv':
+        u, s, vh, stats = mprod_inv.m_svd(A, M, k=k)
 
     else:
         raise ValueError(prod_type + ' not yet implemented')
@@ -186,6 +208,10 @@ def ten_svdII(A, gamma, dim_list=(), prod_type='tprod', M=None, compress_UV=Fals
     elif prod_type == 'cf':
         u, s, vh, stats = cfprod.cf_svdII(A, gamma, dim_list, compress_UV=compress_UV, return_spatial=True,
                                           implicit_rank=implicit_rank)
+        
+    elif prod_type == 'minv':
+        u, s, vh, stats = mprod_inv.m_svdII(A, M, gamma, compress_UV=compress_UV, return_spatial=True,
+                                        implicit_rank=implicit_rank)
 
     else:
         raise ValueError(prod_type + ' nprojection(A, U, prod_type)ot yet implemented')
