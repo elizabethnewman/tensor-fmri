@@ -13,11 +13,11 @@ def m_transform(A, M):
     return mode_k.modek_product(A, M, axis=np.arange(2, A.ndim))
 
 
-def m_itransform(A, M):
+def m_itransform(A, M, ortho=True):
     # apply Mk^T along dimension k
     # each Mk^T must be orthogonal
 
-    return mode_k.modek_product(A, M, transpose=True, axis=np.arange(2, A.ndim))
+    return mode_k.modek_product(A, M, transpose=ortho, inverse=(not ortho), axis=np.arange(2, A.ndim))
 
 
 # ==================================================================================================================== #
@@ -32,18 +32,18 @@ def m_prod(A, B, M, ortho=True):
     for i in range(len(M)):
         assert_compatile_sizes_modek(A, M[i], i + 2)
 
-    if ortho:
-        # move to transform domain
-        A_hat = m_transform(A, M)
-        B_hat = m_transform(B, M)
-    else:
-        raise ValueError("m-product for non-orthogonal matrices not yet implemented")
+    # compute transform
+    A_hat = m_transform(A, M)
+    B_hat = m_transform(B, M)
 
     # compute facewise product
     C_hat = fprod.f_prod(A_hat, B_hat)
 
     # return to spatial comain
-    C = m_itransform(C_hat, M)
+    if ortho:
+        C = m_itransform(C_hat, M, ortho=ortho)
+    else:
+        C = m_itransform(C_hat, M, ortho=ortho)
 
     # ensure C is real-valued
     assert_array_almost_equal(np.imag(C), np.zeros_like(C))
@@ -52,12 +52,12 @@ def m_prod(A, B, M, ortho=True):
     return C
 
 
-def m_eye(shape_I, M):
+def m_eye(shape_I, M, ortho=True):
     assert shape_I[0] == shape_I[1], "Identity tensor must have square frontal slices"
 
     # create identity tube
     id_tube_hat = np.ones([1, 1, *shape_I[2:]])
-    id_tube = m_itransform(id_tube_hat, M)
+    id_tube = m_itransform(id_tube_hat, M, ortho=ortho)
 
     I = np.zeros(shape_I)
     idx = np.arange(shape_I[0])
@@ -72,7 +72,7 @@ def m_tran(A):
 
 
 # ==================================================================================================================== #
-def m_svd(A, M, k=None):
+def m_svd(A, M, k=None, ortho=True):
     # A = U * fdiag(S) * VH
 
     shape_A = A.shape
@@ -83,9 +83,9 @@ def m_svd(A, M, k=None):
     U, s, VH, stats = fprod.f_svd(A, k)
 
     # return to spatial domain
-    U = m_itransform(U, M)
-    S = np.reshape(m_itransform(reshape(s, (1, *s.shape)), M), (s.shape[0], *shape_A[2:]))  # remove first dimension
-    VH = m_itransform(VH, M)
+    U = m_itransform(U, M, ortho=ortho)
+    S = np.reshape(m_itransform(reshape(s, (1, *s.shape)), M, ortho=ortho), (s.shape[0], *shape_A[2:]))  # remove first dimension
+    VH = m_itransform(VH, M, ortho=ortho)
 
     # store statistics
     stats['nrm_A'] = norm(A)
@@ -97,7 +97,7 @@ def m_svd(A, M, k=None):
     return U, S, VH, stats
 
 
-def m_svdII(A, M, gamma, compress_UV=True, return_spatial=True, implicit_rank=None):
+def m_svdII(A, M, gamma, compress_UV=True, return_spatial=True, implicit_rank=None, ortho=True):
     # A = U * fdiag(S) * VH
 
     # transform
@@ -108,9 +108,9 @@ def m_svdII(A, M, gamma, compress_UV=True, return_spatial=True, implicit_rank=No
 
     # return to spatial domain
     if return_spatial:
-        U = m_itransform(U, M)
-        S = m_itransform(np.reshape(S, (1, *S.shape)), M)[0]   # remove first dimension
-        VH = m_itransform(VH, M)
+        U = m_itransform(U, M, ortho=ortho)
+        S = m_itransform(np.reshape(S, (1, *S.shape)), M, ortho=ortho)[0]   # remove first dimension
+        VH = m_itransform(VH, M, ortho=ortho)
 
     # store statistics
     stats['nrm_A'] = norm(A)

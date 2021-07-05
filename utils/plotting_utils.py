@@ -71,3 +71,17 @@ def slice_subplots(A, axis=-1, num_slices=25, title='', num_col=None):
         plt.colorbar()
     fig.suptitle(title)
 
+
+def classification_plots(error, labels):
+    num_classes = error.shape[0]
+
+    plt.figure()
+    for i in range(num_classes):
+        plt.subplot(1, 2, i + 1)
+        for j in range(num_classes):
+            plt.plot(error[j, labels == i], 'o', label=j)
+
+        plt.xlabel('image index')
+        plt.ylabel('distance score (lower is better)')
+        plt.legend()
+        plt.title('class %d' % i)

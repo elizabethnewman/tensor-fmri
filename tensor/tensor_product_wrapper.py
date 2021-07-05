@@ -22,7 +22,7 @@ def get_prod_type(prod_type):
     return prod_type
 
 
-def ten_transform(A, dim_list=(), prod_type='tprod', M=None):
+def ten_transform(A, prod_type='tprod', M=None, dim_list=()):
     prod_type = get_prod_type(prod_type)
 
     if prod_type == 't':
@@ -46,7 +46,7 @@ def ten_transform(A, dim_list=(), prod_type='tprod', M=None):
     return C
 
 
-def ten_itransform(A,dim_list=(), prod_type='tprod', M=None):
+def ten_itransform(A, prod_type='tprod', M=None, dim_list=(), ortho=True):
     prod_type = get_prod_type(prod_type)
 
     if prod_type == 't':
@@ -59,7 +59,7 @@ def ten_itransform(A,dim_list=(), prod_type='tprod', M=None):
         C = cprod.c_itransform(A)
 
     elif prod_type == 'm':
-        C = mprod.m_itransform(A, M=M)
+        C = mprod.m_itransform(A, M=M, ortho=ortho)
 
     elif prod_type == 'cf':
         C = cfprod.cf_itransform(A, dim_list)
@@ -69,7 +69,7 @@ def ten_itransform(A,dim_list=(), prod_type='tprod', M=None):
     return C
 
 
-def ten_prod(A, B, dim_list=(), prod_type='tprod', M=None):
+def ten_prod(A, B, prod_type='tprod', M=None, dim_list=(), ortho=True):
 
     prod_type = get_prod_type(prod_type)
 
@@ -83,7 +83,7 @@ def ten_prod(A, B, dim_list=(), prod_type='tprod', M=None):
         C = cprod.c_prod(A, B)
 
     elif prod_type == 'm':
-        C = mprod.m_prod(A, B, M)
+        C = mprod.m_prod(A, B, M, ortho=ortho)
 
     elif prod_type == 'cf':
         C = cfprod.cf_prod(A, B, dim_list)
@@ -93,7 +93,7 @@ def ten_prod(A, B, dim_list=(), prod_type='tprod', M=None):
     return C
 
 
-def ten_tran(A, prod_type='tprod'):
+def ten_tran(A, prod_type='tprod', dim_list=()):
     prod_type = get_prod_type(prod_type)
 
     if prod_type == 't':
@@ -117,7 +117,7 @@ def ten_tran(A, prod_type='tprod'):
     return AT
 
 
-def ten_eye(shape_I, dim_list=(), prod_type='tprod', M=None):
+def ten_eye(shape_I, prod_type='tprod', M=None, dim_list=(), ortho=True):
     prod_type = get_prod_type(prod_type)
 
     if prod_type == 't':
@@ -130,7 +130,7 @@ def ten_eye(shape_I, dim_list=(), prod_type='tprod', M=None):
         AT = cprod.c_eye(shape_I)
 
     elif prod_type == 'm':
-        AT = mprod.m_eye(shape_I, M)
+        AT = mprod.m_eye(shape_I, M, ortho=ortho)
 
     elif prod_type == 'cf':
         AT = cfprod.cf_eye(shape_I, dim_list)
@@ -141,7 +141,7 @@ def ten_eye(shape_I, dim_list=(), prod_type='tprod', M=None):
     return AT
 
 
-def ten_svd(A, dim_list=(), k=None, prod_type='tprod', M=None):
+def ten_svd(A, k=None, prod_type='tprod', M=None, dim_list=(), ortho=True):
     prod_type = get_prod_type(prod_type)
 
     if prod_type == 't':
@@ -154,7 +154,7 @@ def ten_svd(A, dim_list=(), k=None, prod_type='tprod', M=None):
         u, s, vh, stats = cprod.c_svd(A, k=k)
 
     elif prod_type == 'm':
-        u, s, vh, stats = mprod.m_svd(A, M, k=k)
+        u, s, vh, stats = mprod.m_svd(A, M, k=k, ortho=ortho)
 
     elif prod_type == 'cf':
         u, s, vh, stats = cfprod.cf_svd(A, dim_list, k=k)
@@ -165,7 +165,8 @@ def ten_svd(A, dim_list=(), k=None, prod_type='tprod', M=None):
     return u, s, vh, stats
 
 
-def ten_svdII(A, gamma, dim_list=(), prod_type='tprod', M=None, compress_UV=False, return_spatial=True, implicit_rank=None):
+def ten_svdII(A, gamma, prod_type='tprod', M=None, compress_UV=False, return_spatial=True, implicit_rank=None,
+              dim_list=(), ortho=True):
     prod_type = get_prod_type(prod_type)
 
     if prod_type == 't':
@@ -181,13 +182,13 @@ def ten_svdII(A, gamma, dim_list=(), prod_type='tprod', M=None, compress_UV=Fals
 
     elif prod_type == 'm':
         u, s, vh, stats = mprod.m_svdII(A, M, gamma, compress_UV=compress_UV, return_spatial=True,
-                                        implicit_rank=implicit_rank)
+                                        implicit_rank=implicit_rank, ortho=ortho)
 
     elif prod_type == 'cf':
         u, s, vh, stats = cfprod.cf_svdII(A, gamma, dim_list, compress_UV=compress_UV, return_spatial=True,
                                           implicit_rank=implicit_rank)
 
     else:
-        raise ValueError(prod_type + ' nprojection(A, U, prod_type)ot yet implemented')
+        raise ValueError(prod_type + ' not yet implemented')
 
     return u, s, vh, stats
