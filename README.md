@@ -20,7 +20,8 @@ Requirements:
 
 * data
 
-data for testing, training and test images
+We are using the [StarPlus fMRI dataset](http://www.cs.cmu.edu/afs/cs.cmu.edu/project/theo-81/www/).  
+The experiment consists of a set of trials, and the data is partitioned into trials.  For some of these intervals, the subject simply rested, or gazed at a fixation point on the screen.  For other trials, the subject was shown a picture and a sentence, and instructed to press a button to indicate whether the sentence correctly described the picture.  For these trials, the sentence and picture were presented in sequence, with the picture presented first on half of the trials, and the sentence presented first on the other half of the trials.  Forty such trials are available for each subject.  
 
 * tensor
 
