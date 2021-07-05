@@ -91,4 +91,4 @@ def get_labels(star_plus_data):
 
     tensor_PS = np.concatenate((tensor_P, tensor_S), axis=4)
 
-    return tensor_PS, labels
+    return tensor_PS, labels.reshape(-1)
