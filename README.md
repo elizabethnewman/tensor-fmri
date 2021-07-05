@@ -21,7 +21,7 @@ Requirements:
 * data
 
 We are using the [StarPlus fMRI dataset](http://www.cs.cmu.edu/afs/cs.cmu.edu/project/theo-81/www/).  
-This consists of fMRIs of study subjects who are shown either a sentence or an image, and we aim to classify the study subjects into these two categories.  We represent the data in fifth order tensors containing pixel data of the 3D brain images over time over each trial.  
+This consists of fMRIs of study subjects who are shown either a sentence or an image, and we aim to classify them into these two categories.  We represent the data in a fifth order tensor containing pixel data of the 3D brain images over time over each trial.  
 
 * tensor
 
