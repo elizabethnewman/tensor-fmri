@@ -21,7 +21,7 @@ Requirements:
 * data
 
 We are using the [StarPlus fMRI dataset](http://www.cs.cmu.edu/afs/cs.cmu.edu/project/theo-81/www/).  
-This consists of fMRIs of study subjects who are shown either a sentence or an image.  By using tensors we classify the study subjects into these two categories.   
+This consists of fMRIs of study subjects who are shown either a sentence or an image.  We aim to classify the study subjects into these two categories.  The tensors contain pixel data of the 3D brain images of the study subjects over time during each trial.  
 
 * tensor
 
