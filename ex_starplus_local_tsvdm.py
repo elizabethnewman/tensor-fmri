@@ -24,7 +24,7 @@ plot = False
 # ==================================================================================================================== #
 # choose product type {'m'}
 prod_type = 'm'
-ortho = True
+ortho = False
 
 
 # ==================================================================================================================== #
@@ -61,7 +61,8 @@ test_data = np.moveaxis(test_data, 0, 1)
 # choose transformations for M
 M = []
 for i in range(2, training_data.ndim):
-    M.append(tm.haar_matrix(training_data.shape[i], normalized=True))
+    # M.append(tm.haar_matrix(training_data.shape[i], normalized=True))
+    M.append(tm.banded_matrix(training_data.shape[i], 2))
 
 
 # ==================================================================================================================== #

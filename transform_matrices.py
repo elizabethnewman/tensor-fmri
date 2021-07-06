@@ -1,6 +1,7 @@
 import numpy as np
 from tensor.mode_k import modek_unfold
 from numpy.linalg import eig
+from scipy.linalg import toeplitz
 import math
 
 
@@ -30,7 +31,7 @@ def haar_matrix(n, normalized=True):
     return M
 
 
-def banded_matrix(n, band):
+def banded_matrix(n, band, version=1):
     """
 
     Parameters
@@ -42,12 +43,15 @@ def banded_matrix(n, band):
     -------
 
     """
-    c = np.stack((np.ones(band), np.zeros(n - band)))
-    r = np.stack((np.ones(1), np.zeros(n - 1)))
-    M = np.linalg.toeplitz(r, c)
+    c = np.hstack((np.ones(band), np.zeros(n - band)))
+    r = np.hstack((np.ones(1), np.zeros(n - 1)))
+    M = toeplitz(c, r)
 
     # normalize
-    M /= np.sum(M, axis=0)
+    if version == 1:
+        M /= np.hstack((np.arange(1, band + 1), band * np.ones(n - band))).reshape(n, 1)
+    else:
+        M /= np.arange(1, n + 1).reshape(1, n)
 
     return M
 
