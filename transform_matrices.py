@@ -69,3 +69,17 @@ def left_singular_matrix(A, k):
     idx = np.flip(idx)
 
     return u[:, idx]
+
+
+def roi_left_singular_matrix(A, k, roi_tensor, label):
+    Rk = modek_unfold(roi_tensor, k)
+    Ak = modek_unfold(A, k)
+
+    Ak = Ak[:, np.sum(Rk == label, axis=0) > 0]
+
+    d, u = eig(Ak @ Ak.T)
+
+    idx = np.argsort(d)
+    idx = np.flip(idx)
+
+    return u[:, idx]
