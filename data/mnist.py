@@ -63,5 +63,5 @@ def load_tensor(num_per_class_train=100, num_per_class_test=10, num_classes=10, 
     return training_data.transpose([1, 2, 0]), training_labels, test_data.transpose([1, 2, 0]), test_labels
 
 
-# if __name__ == '__main__':
-#     init()
+if __name__ == '__main__':
+    init()
