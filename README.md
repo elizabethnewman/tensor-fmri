@@ -15,7 +15,6 @@ Here is where we will add the citation to the paper.
 cd <directory to store code>
 git clone https://github.com/elizabethnewman/tensor-fmri.git
 pip install -r requirements.txt
-python setup.py install
 ```
 Additional Requirements:
 * Python version 3.7 or newer
