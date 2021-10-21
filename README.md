@@ -12,15 +12,15 @@ Here is where we will add the citation to the paper.
 
 ### Installation and Requirements
 ```angular2html
-cd <directory to store code>
 git clone https://github.com/elizabethnewman/tensor-fmri.git
+cd tensor-fmri
 pip install -r requirements.txt
 ```
 **Additional Requirements**: python version 3.7 or newer
 
-**Additional Advice**: create a virtual environment before installing the requirements via
+**Additional Advice**: *before installing the requirements*, create a virtual environment via
 ```angular2html
-virtualenv -p python3 env_name
+virtualenv -p python3 <env_name>
 ```
 To use the environment, activate via
 ```angular2html
@@ -32,6 +32,12 @@ When finished, deactivate while in the virtual environment via
 deactivate
 ```
 
+### StarPlus Data
+
+The [StarPlus fMRI dataset](http://www.cs.cmu.edu/afs/cs.cmu.edu/project/theo-81/www/) is publicly-available and fairly small.  This dataset consists of fMRIs of study subjects who are shown either a sentence or an image, and we aim to classify them into these two categories.  We represent the data in a fifth order tensor containing pixel data of the 3D brain images over time over each trial. 
+
+Download from the website to the **data** folder before running StarPlus scripts.
+
 
 ### Organization
 
@@ -42,7 +48,7 @@ deactivate
 
 * **tests**: contains internal code to test the tensor-tensor products and can be used in the development of new code.
 
-* **utils**: contains visualization and preprocessing tools.  Importantly, contains the functions used to setup the [StarPlus fMRI dataset](http://www.cs.cmu.edu/afs/cs.cmu.edu/project/theo-81/www/).  This dataset consists of fMRIs of study subjects who are shown either a sentence or an image, and we aim to classify them into these two categories.  We represent the data in a fifth order tensor containing pixel data of the 3D brain images over time over each trial. 
+* **utils**: contains visualization and preprocessing tools.  
 
 
 ### Introductary Notebooks in Google Colab
