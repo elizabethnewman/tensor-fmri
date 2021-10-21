@@ -15,7 +15,7 @@ import pickle
 
 # ==================================================================================================================== #
 # saving options
-save = True
+save = False
 filename = 'local_tsvdm'
 
 # plotting options
@@ -24,7 +24,7 @@ plot = False
 # ==================================================================================================================== #
 # choose product type {'m'}
 prod_type = 'm'
-ortho = False
+ortho = True
 
 
 # ==================================================================================================================== #
@@ -36,11 +36,13 @@ def projection(A, U, prod_type='m', M=None, dim_list=(), ortho=True):
 
 
 # ==================================================================================================================== #
+#%%
 # for reproducibility
 np.random.seed(20)
 
 # load data
-subject_ids = ['04847', '04799', '04820', '05675', '05710']
+# subject_ids = ['04847', '04799', '04820', '05675', '05710']
+subject_ids = ['04847']
 tensor_PS = np.empty([64, 64, 8, 16, 80])
 labels = np.empty(0)
 for id in subject_ids:
@@ -48,6 +50,10 @@ for id in subject_ids:
     tensor_PS_id, labels_id = starp.get_labels(star_plus_data)
     tensor_PS = np.concatenate((tensor_PS, tensor_PS_id), axis=-1)
     labels = np.concatenate((labels, labels_id.reshape(-1)))
+
+    star_plus_data = scipy.io.loadmat('data/data-starplus-' + id + '-v7.mat')
+    roi_tensor, _, _ = starp.visualize_roi(star_plus_data)
+    roi_tensor = np.repeat()
 
 tensor_PS = tensor_PS[:, :, :, :, 80:] / norm(tensor_PS)
 
@@ -57,14 +63,17 @@ training_data, test_data, training_labels, test_labels = train_test_split(np.mov
 training_data = np.moveaxis(training_data, 0, 1)
 test_data = np.moveaxis(test_data, 0, 1)
 
+print('Loaded data...')
+
 # ==================================================================================================================== #
+#%%
 # choose transformations for M
 M = []
 for i in range(2, training_data.ndim):
-    # M.append(tm.haar_matrix(training_data.shape[i], normalized=True))
-    M.append(tm.banded_matrix(training_data.shape[i], 2))
+    M.append(tm.haar_matrix(training_data.shape[i], normalized=True))
+    # M.append(tm.banded_matrix(training_data.shape[i], 2))
 
-
+print('Formed M...')
 # ==================================================================================================================== #
 # form local t-svd
 num_classes = len(np.unique(training_labels))
@@ -75,6 +84,7 @@ for i in range(num_classes):
     u, _, _, _ = tp.ten_svd(training_data[:, training_labels == i], k=max(range_k), prod_type='m', M=M, ortho=ortho)
     U.append(u)
 
+print('Formed local t-SVDM...')
 # ==================================================================================================================== #
 # compute results on training and test data
 training_error = np.zeros([num_classes, training_data.shape[1], len(range_k)])

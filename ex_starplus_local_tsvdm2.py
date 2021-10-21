@@ -42,7 +42,7 @@ np.random.seed(20)
 
 # load data
 # subject_ids = ['04847', '04799', '04820', '05675', '05710']
-subject_ids = ['04847']
+subject_ids = ['05710']
 tensor_PS = np.empty([64, 64, 8, 16, 80])
 labels = np.empty(0)
 for id in subject_ids:
@@ -54,7 +54,7 @@ for id in subject_ids:
     star_plus_data = scipy.io.loadmat('data/data-starplus-' + id + '-v7.mat')
     roi_tensor, my_color_map, names = starp.visualize_roi(star_plus_data)
 
-tensor_PS = tensor_PS[:, :, :, :, 80:] / norm(tensor_PS)
+tensor_PS = tensor_PS[:, :, :, :, 80:]  / norm(tensor_PS)
 
 
 # split
