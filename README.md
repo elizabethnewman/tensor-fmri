@@ -16,8 +16,21 @@ cd <directory to store code>
 git clone https://github.com/elizabethnewman/tensor-fmri.git
 pip install -r requirements.txt
 ```
-Additional Requirements:
-* Python version 3.7 or newer
+**Additional Requirements**: python version 3.7 or newer
+
+**Additional Advice**: create a virtual environment before installing the requirements via
+```angular2html
+virtualenv -p python3 env_name
+```
+To use the environment, activate via
+```angular2html
+source env_name/bin/activate
+pip install -r requirements.txt
+```
+When finished, deactivate while in the virtual environment via
+```angular2html
+deactivate
+```
 
 
 ### Organization
