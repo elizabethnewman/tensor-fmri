@@ -22,14 +22,14 @@ Additional Requirements:
 
 ### Organization
 
-* **data**: contains the functions used to setup the [StarPlus fMRI dataset](http://www.cs.cmu.edu/afs/cs.cmu.edu/project/theo-81/www/).  This dataset consists of fMRIs of study subjects who are shown either a sentence or an image, and we aim to classify them into these two categories.  We represent the data in a fifth order tensor containing pixel data of the 3D brain images over time over each trial.  
+* **data**:  contains two datasets, the toy synthetic dataset and the [MNIST](http://yann.lecun.com/exdb/mnist/) datasets.
 
 * **tensor**: contains functions for all the needed tensor products and tensor SVD.  This is the core of the repository and is written for general use, not just for fMRI data.
 
 
 * **tests**: contains internal code to test the tensor-tensor products and can be used in the development of new code.
 
-* **utils**: contains visualization and preprocessing tools.
+* **utils**: contains visualization and preprocessing tools.  Importantly, contains the functions used to setup the [StarPlus fMRI dataset](http://www.cs.cmu.edu/afs/cs.cmu.edu/project/theo-81/www/).  This dataset consists of fMRIs of study subjects who are shown either a sentence or an image, and we aim to classify them into these two categories.  We represent the data in a fifth order tensor containing pixel data of the 3D brain images over time over each trial. 
 
 
 ### Introductary Notebooks in Google Colab
