@@ -7,7 +7,14 @@ Using tensor-based approaches to classify fMRI data from [StarPLUS](http://www.c
 If you use any code in this repository, please cite the following work.
 
 ```latex
-Here is where we will add the citation to the paper.
+@misc{keegan2021tensor,
+      title={A Tensor SVD-based Classification Algorithm Applied to fMRI Data}, 
+      author={Katherine Keegan and Tanvi Vishwanath and Yihua Xu},
+      year={2021},
+      eprint={2111.00587},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+}
 ```
 
 ### Installation and Requirements
