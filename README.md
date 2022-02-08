@@ -63,10 +63,10 @@ Download from the website to the **data** folder before running StarPlus scripts
 To illustrate the utility of the code and our algorithm, we have create two Google Colab notebooks.
 
 * Synthetic Data Example:
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/elizabethnewman/tensor-fmri/blob/main/notebooks/TensorFMRI_MNISTNotebook.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/elizabethnewman/tensor-fmri/blob/main/notebooks/TensorFMRI_StripesNotebook.ipynb)
 
 * MNIST Example:
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1KG29iU366NHc_5fbJoAEgAxT4OkE5vzG#scrollTo=r6Pdn4H9RSyI)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/elizabethnewman/tensor-fmri/blob/main/notebooks/TensorFMRI_MNISTNotebook.ipynb)
 
 
 ### Resources
