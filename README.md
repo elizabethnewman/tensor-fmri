@@ -77,5 +77,8 @@ To illustrate the utility of the code and our algorithm, we have create two Goog
 
 * Kilmer, Horesh, Avron, and Newman [Tensor-tensor algebra for optimal representation and compression of multiway data](https://www.pnas.org/content/118/28/e2015851118/tab-article-info). *PNAS*, 28 (118), 2021.
 
+### Acknowledgements
+
+This material is in part based upon work supported by the US National Science Foundation Grant DMS-2051019. Any opinions, findings, and conclusions or recommendations expressed in this material are those of the author(s) and do not necessarily reflect the views of the funding agencies.
 
 
